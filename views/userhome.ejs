@@ -1,0 +1,234 @@
+<head>
+  <title>PriceDetector</title>
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="232080972084-fc2ddonm97gmt2levpq6cvoo8crbmhra.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <link rel="stylesheet" href="../styles/userhome.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!--<link href="assets/vendor/aos/aos.css" rel="stylesheet">-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+  
+</head>
+
+<body>
+    <header id="header" class="fixed-top">
+        <div class="container d-flex align-items-center justify-content-between">
+    
+          <div class="logo" style="color: white;"><h1>PriceDetector</h1></div>
+    
+          <nav id="navbar" class="navbar">
+            <ul>
+              <li><a class="getstarted scrollto" onclick="signOut();" style="text-decoration: none;" href="/">Signout</a></li>
+            </ul>
+    
+          </nav><!-- .navbar -->
+    
+        </div>
+      </header>
+
+<!--<%- JSON.stringify(proddetails) %>-->
+
+<!--<div id="prodtable">
+    <br>
+    <table>
+        <tr>
+        <th>Product Title</th>
+        <th>Product URL</th>
+        <th>Current Price</th>
+        <th>Expected Price</th>
+        <th></th>
+        </tr>
+       <% proddetails.forEach((element) => { %> 
+            
+            <tr>
+                <td><a href="<%- element.produrl %>"><%- element.prodtitle %></a></td>
+                <td><a href="<%- element.produrl %>"><%- element.produrl %></a></td>
+                <td><%- element.nowprice %></td>
+                <td id="price<%- element.produrl %>"  contenteditable="false"><div id="eleprice<%- element.produrl %>"><%- element.price %></div>
+                    <button id="editbtn<%- element.produrl %>"  class="changeprice" onclick="changeprod('<%= element.userid %>', '<%= element.produrl %>',  this)">Edit Price</button>
+                <button style="display:none;" id="updbtn<%- element.produrl %>"  class="changeprice" onclick="updateprod('<%= element.userid %>', '<%= element.produrl %>',  this)">Save</button>
+                </td>
+                <% var url = element.produrl %>
+                <td><button class="remuser" onclick="delprod('<%- element.userid %>', '<%= url %>', this)">Remove</button></td>
+            </tr>
+            
+            <% }) %>
+       
+    </table>
+
+</div>-->
+
+<section id="services" class="services section-bg">
+    <div class="container">
+
+      <div class="section-title">
+        <h2 style="color: white;">Hey <%- locals.username %></h2>
+              </div>
+      
+      <div class="row" id="prodicons">
+
+        <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
+            <div class="icon-box iconbox-blue">
+                <h4>ADD NEW PRODUCT</h4>
+              <p>
+                <form id="adding" method="POST">
+                    URL:<br><input type="text" id="produrl"><br><br>
+                    Expected Price:<br><input type="text" id="price" pattern="[+-]?[0-9][0-9]*"><br><br>
+                    <button type="submit">Submit</button>
+                </form>
+              </p>
+            </div>
+          </div>
+
+        <% proddetails.forEach((element) => { %> 
+        <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
+          <div class="icon-box iconbox-blue">
+            <div class="icon">
+            <img src="<%- element.prodimg %>" alt="Image" height="100px" width="auto">
+            </div>
+            <h4><a href="<%- element.produrl %>" style="text-decoration: none;" target="_blank"><%- element.prodtitle %></a></h4>
+            <p>
+                <div class="cprice">Current Price: Rs. <%- element.nowprice %></div>
+                <div class="eprice">Expected Price: Rs.<div style="display: inline;" id="price<%- element.produrl %>"  contenteditable="false"><div style="display: inline;" id="eleprice<%- element.produrl %>"><%- element.price %></div>
+                    
+            </div></div><br>
+            <button id="editbtn<%- element.produrl %>"  class="changeprice" onclick="changeprod('<%= element.userid %>', '<%= element.produrl %>')">Edit Price</button>
+                <!--<button style="display:none;" id="updbtn<%- element.produrl %>"  class="changeprice" onclick="updateprod('<%= element.userid %>', '<%= element.produrl %>',  this)">Save</button>-->
+                <% var url = element.produrl %>
+                <button class="remuser" onclick="delprod('<%- element.userid %>', '<%= url %>', this)">Remove</button>
+
+            </p>
+          </div>
+        </div>
+
+        <% }) %>
+      </div>
+
+    </div>
+  </section>
+
+
+<script>
+  function signOut() {
+    gapi.auth2.getAuthInstance().disconnect();
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+        console.log('Logged Out')
+    });
+  }
+</script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+<script src="client.js"></script>
+<script>
+
+function delprod(userid1, produrl, btn){
+    console.log(userid1+produrl)
+    console.log("HEREEE")
+        var row = btn.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+        console.log(userid1)
+        $.ajax('/deleteprod', {    
+            type:'POST',
+            data:{userid:userid1, produrl:produrl},
+            success:function(data){
+                //window.location.reload()
+                //alert("deleted")
+            }
+        })
+    }
+
+
+
+    function changeprod(userid, url){
+        console.log('deixn')
+        document.getElementById("price"+url).setAttribute('contenteditable', "true")
+        document.getElementById("editbtn"+url).setAttribute('onclick', 'updateprod("'+userid+'","'+url+'")');
+        document.getElementById("editbtn"+url).style.backgroundColor = 'darkgreen'
+        document.getElementById("editbtn"+url).innerHTML="Save";
+
+        //document.getElementById("updbtn"+url).setAttribute('style', 'display:block')
+
+    }
+
+    function updateprod(userid, url) {
+        console.log('UPDATED')
+        var price = document.getElementById("eleprice"+url).innerText;
+        var pattern = new RegExp("^\\d+$");
+        if(pattern.test(price)){
+
+            document.getElementById("price"+url).setAttribute('contenteditable', "false")
+            document.getElementById("editbtn"+url).setAttribute('onclick', 'changeprod("'+userid+'","'+url+'")');
+        document.getElementById("editbtn"+url).innerHTML="Edit Price";
+        document.getElementById("editbtn"+url).style.backgroundColor = 'black'
+            //document.getElementById("editbtn"+url).setAttribute('style', 'display:block');
+        //document.getElementById("updbtn"+url).setAttribute('style', 'display:none')
+        
+
+        $.ajax({
+            url:'/updateprodprice', 
+            type:'post',
+            data:{url:url, price:price},
+            success: function(data) {
+                //alert(data)
+            }
+        })
+
+        }
+        
+        else {
+            alert("Invalid Price")
+        }
+        
+    }
+
+    $(document).ready(function(){
+
+        $('#adding').submit(function(event){
+            var expprice = $('#price').val()
+            event.preventDefault()
+            $.ajax('/addprod', {
+                type:'POST',
+                data:{produrl:$('#produrl').val(), price:($('#price').val())},
+                success: function(data) {
+                    
+                    console.log('cool')
+                    if(data=="0")
+                    {
+                        alert("Invalid URL!")
+                    }
+                    else {
+                        //alert(JSON.stringify(data))
+                        var text = `<div class="col-lg-4 col-md-6 d-flex align-items-stretch">
+          <div class="icon-box iconbox-blue">
+            <div class="icon">
+            <img src="`+data.prodimg+`" alt="Image" height="100px" width="auto">
+            </div>
+            <h4><a href="`+data.produrl+`" style="text-decoration: none;" target="_blank">`+data.prodtitle+`</a></h4>
+            <p>
+                <div class="cprice">Current Price: Rs. `+data.nowprice+`</div>
+                <div class="eprice">Expected Price: Rs.<div style="display: inline;" id="price`+data.produrl+`"  contenteditable="false"><div style="display: inline;" id="eleprice`+data.produrl+`">`+expprice+`</div>
+                    
+            </div></div><br>
+            <button id="editbtn`+data.produrl+`"  class="changeprice" onclick="changeprod('<%= locals.userid %>', '`+data.produrl+`',  this)">Edit Price</button>
+                <button style="display:none;" id="updbtn`+data.produrl+`"  class="changeprice" onclick="updateprod('<%= locals.userid %>', '`+data.produrl+`',  this)">Save</button>
+                 <button class="remuser" onclick="delprod('<%- locals.userid %>', '`+data.produrl+`', this)">Remove</button>
+
+            </p>
+          </div>
+        </div>`
+                        $('#prodicons').append(text)
+                    }
+                    //alert(data[0].title)
+                
+            }
+        })
+
+        })
+
+    })
+
+</script>
+</body>

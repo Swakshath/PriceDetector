@@ -1,0 +1,29 @@
+{
+  "name": "pricedetector",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "app.js",
+    "dev": "nodemon -e js,ejs,html -w . -w views -w routes app.js"
+  },
+  "author": "Swaky",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.17.2",
+    "google-auth-library": "^7.3.0",
+    "mongodb": "^4.0.1",
+    "puppeteer": "^10.1.0",
+    "puppeteer-cluster": "^0.22.0",
+    "puppeteer-extra": "^3.1.18",
+    "puppeteer-extra-plugin-recaptcha": "^3.4.0",
+    "puppeteer-extra-plugin-stealth": "^2.7.8",
+    "web-push": "^3.4.5"
+  }
+}
